@@ -118,3 +118,67 @@ describe("token stored, network error", () => {
     );
   });
 });
+
+describe("applyRule", () => {
+  const RULES = [
+    { urlSubstring: "github.com", projectId: "proj_1", label: "dev" },
+    { urlSubstring: "docs.google", projectId: "proj_2" },
+  ];
+
+  let applyRule;
+  beforeEach(() => {
+    jest.resetModules();
+    applyRule = require("../background").applyRule;
+  });
+
+  it("returns project_id and labels when rule matches", () => {
+    expect(applyRule("https://github.com/foo", RULES)).toEqual({
+      project_id: "proj_1",
+      labels: ["dev"],
+    });
+  });
+
+  it("returns only project_id when rule has no label", () => {
+    expect(applyRule("https://docs.google.com/doc", RULES)).toEqual({
+      project_id: "proj_2",
+    });
+  });
+
+  it("returns empty object when no rule matches", () => {
+    expect(applyRule("https://example.com", RULES)).toEqual({});
+  });
+
+  it("uses first matching rule", () => {
+    const overlapping = [
+      { urlSubstring: "github", projectId: "proj_1" },
+      { urlSubstring: "github.com", projectId: "proj_2" },
+    ];
+    expect(applyRule("https://github.com/foo", overlapping)).toEqual({
+      project_id: "proj_1",
+    });
+  });
+});
+
+describe("rules applied in task creation", () => {
+  const RULES = [{ urlSubstring: "example.com", projectId: "proj_123", label: "web" }];
+
+  beforeEach(() => {
+    chrome.storage.local.get.mockResolvedValue({ apiToken: TOKEN, rules: RULES });
+    global.fetch = jest.fn().mockResolvedValue({ ok: true });
+    loadBackground();
+  });
+
+  it("includes project_id and labels in request body when rule matches", async () => {
+    await onClickedCallback(TAB);
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        body: JSON.stringify({
+          content: EXPECTED_CONTENT,
+          project_id: "proj_123",
+          labels: ["web"],
+        }),
+      })
+    );
+  });
+});

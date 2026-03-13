@@ -6,23 +6,24 @@
     <style>
       body {
         font-family: system-ui, sans-serif;
-        max-width: 400px;
+        max-width: 640px;
         margin: 40px auto;
         padding: 0 16px;
         color: #1a1a1a;
       }
       h2 { margin-bottom: 24px; }
+      h3 { margin: 32px 0 12px; }
       label { display: block; margin-bottom: 8px; font-weight: 600; }
-      input {
-        width: 100%;
+      input, select {
         padding: 8px 10px;
         font-size: 14px;
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
+        background: #fff;
       }
+      #apiToken { width: 100%; }
       button {
-        margin-top: 12px;
         padding: 8px 20px;
         background: #db4035;
         color: #fff;
@@ -32,12 +33,51 @@
         font-size: 14px;
       }
       button:hover { background: #b8372e; }
-      #status { margin-top: 10px; font-size: 13px; min-height: 18px; }
+      button.secondary {
+        background: #f5f5f5;
+        color: #333;
+        border: 1px solid #ccc;
+      }
+      button.secondary:hover { background: #e8e8e8; }
+      button.danger {
+        background: none;
+        color: #999;
+        border: none;
+        padding: 4px 8px;
+        font-size: 18px;
+        line-height: 1;
+      }
+      button.danger:hover { color: #ef4444; background: none; }
+      #tokenStatus { margin-top: 10px; font-size: 13px; min-height: 18px; }
+      #rulesStatus { margin-top: 10px; font-size: 13px; min-height: 18px; }
       p.hint { font-size: 12px; color: #666; margin-top: 6px; }
+      hr { border: none; border-top: 1px solid #eee; margin: 32px 0; }
+
+      #rules-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+      .rule-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 8px;
+        align-items: center;
+      }
+      .rule-row input, .rule-row select { width: 100%; }
+      .rules-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 4px;
+        padding: 0 2px;
+      }
+      .rules-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+      #load-warning { font-size: 12px; color: #999; margin: 0; }
     </style>
   </head>
   <body>
     <h2>Todoist Quick Capture</h2>
+
     <label for="apiToken">API Token</label>
     <input id="apiToken" type="password" placeholder="Paste your Todoist API token" />
     <p class="hint">
@@ -46,8 +86,31 @@
         Todoist Settings → Integrations → Developer
       </a>
     </p>
-    <button id="save">Save</button>
-    <p id="status"></p>
+    <button id="save-token" style="margin-top:12px">Save</button>
+    <p id="tokenStatus"></p>
+
+    <hr />
+
+    <h3>Rules</h3>
+    <p class="hint" style="margin-bottom:16px">
+      First matching rule wins. Project and label are optional per rule.
+    </p>
+
+    <div class="rules-header">
+      <span>URL contains</span>
+      <span>Project</span>
+      <span>Label</span>
+      <span></span>
+    </div>
+    <div id="rules-list"></div>
+
+    <div class="rules-actions">
+      <button class="secondary" id="add-rule">+ Add rule</button>
+      <button id="save-rules">Save rules</button>
+      <p id="load-warning"></p>
+    </div>
+    <p id="rulesStatus"></p>
+
     <script src="options.js"></script>
   </body>
 </html>
