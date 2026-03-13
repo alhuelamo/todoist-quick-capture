@@ -18,6 +18,8 @@ function buildSvg(size) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 128 128">
   <rect width="128" height="128" rx="${radius}" ry="${radius}" fill="#db4035"/>
   ${checks}
+  <circle cx="98" cy="98" r="24" fill="#1a73e8"/>
+  <path d="M 98,84 L 98,112 M 84,98 L 112,98" stroke="white" stroke-width="8" stroke-linecap="round"/>
 </svg>`;
 }
 
