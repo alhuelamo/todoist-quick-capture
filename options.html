@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Todoist Quick Capture – Settings</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 0 16px;
+        color: #1a1a1a;
+      }
+      h2 { margin-bottom: 24px; }
+      label { display: block; margin-bottom: 8px; font-weight: 600; }
+      input {
+        width: 100%;
+        padding: 8px 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        margin-top: 12px;
+        padding: 8px 20px;
+        background: #db4035;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      button:hover { background: #b8372e; }
+      #status { margin-top: 10px; font-size: 13px; min-height: 18px; }
+      p.hint { font-size: 12px; color: #666; margin-top: 6px; }
+    </style>
+  </head>
+  <body>
+    <h2>Todoist Quick Capture</h2>
+    <label for="apiToken">API Token</label>
+    <input id="apiToken" type="password" placeholder="Paste your Todoist API token" />
+    <p class="hint">
+      Find your token at
+      <a href="https://app.todoist.com/app/settings/integrations/developer" target="_blank">
+        Todoist Settings → Integrations → Developer
+      </a>
+    </p>
+    <button id="save">Save</button>
+    <p id="status"></p>
+    <script src="options.js"></script>
+  </body>
+</html>
