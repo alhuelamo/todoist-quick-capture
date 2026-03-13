@@ -34,6 +34,22 @@ On first click, the extension opens the settings page. Paste your Todoist API to
 
 To reopen settings later: right-click the toolbar icon → **Options** (Chrome) or **Manage Extension → Preferences** (Firefox).
 
+## Rules
+
+Rules let you automatically assign a **project** and/or **label** to a task based on the URL of the page being captured.
+
+Open the settings page and scroll to the **Rules** section. Each rule has three fields:
+
+| Field | Description |
+|---|---|
+| URL contains | A substring matched against the full URL (e.g. `github.com`, `notion.so`) |
+| Project | The Todoist project to assign the task to. Leave blank for Inbox. |
+| Label | A label to apply. Leave blank for none. |
+
+Rules are evaluated top to bottom — the **first match wins**. Rows with an empty URL field are ignored.
+
+Projects and labels are loaded from your Todoist account when the settings page opens (requires a valid API token to be saved first).
+
 ## Development
 
 ```sh

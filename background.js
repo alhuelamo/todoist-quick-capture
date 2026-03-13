@@ -4,21 +4,31 @@ const BADGE_CLEAR_DELAY_MS = 2000;
 chrome.action.onClicked.addListener(handleActionClick);
 
 async function handleActionClick(tab) {
-  const token = await loadToken();
+  const { token, rules } = await loadSettings();
   if (!token) {
     chrome.runtime.openOptionsPage();
     return;
   }
-  await captureTab(tab, token);
+  await captureTab(tab, token, rules);
 }
 
-async function loadToken() {
-  const { apiToken } = await chrome.storage.local.get("apiToken");
-  return apiToken || null;
+async function loadSettings() {
+  const { apiToken, rules } = await chrome.storage.local.get(["apiToken", "rules"]);
+  return { token: apiToken || null, rules: rules || [] };
 }
 
-async function captureTab(tab, token) {
+function applyRule(url, rules) {
+  const match = rules.find((r) => url.includes(r.urlSubstring));
+  if (!match) return {};
+  const extras = {};
+  if (match.projectId) extras.project_id = match.projectId;
+  if (match.label) extras.labels = [match.label];
+  return extras;
+}
+
+async function captureTab(tab, token, rules) {
   const content = `[${tab.title}](${tab.url})`;
+  const extras = applyRule(tab.url, rules);
   try {
     const response = await fetch(TODOIST_API_URL, {
       method: "POST",
@@ -26,7 +36,7 @@ async function captureTab(tab, token) {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ content }),
+      body: JSON.stringify({ content, ...extras }),
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     showBadge(tab.id, "✓", "#22c55e");
@@ -40,3 +50,5 @@ function showBadge(tabId, text, color) {
   chrome.action.setBadgeBackgroundColor({ color, tabId });
   setTimeout(() => chrome.action.setBadgeText({ text: "", tabId }), BADGE_CLEAR_DELAY_MS);
 }
+
+if (typeof module !== "undefined") module.exports = { applyRule };
