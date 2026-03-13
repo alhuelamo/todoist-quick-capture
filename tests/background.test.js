@@ -20,7 +20,7 @@ const EXPECTED_CONTENT = "[My Page](https://example.com/page)";
 
 describe("no API token stored", () => {
   beforeEach(() => {
-    chrome.storage.sync.get.mockResolvedValue({});
+    chrome.storage.local.get.mockResolvedValue({});
     loadBackground();
   });
 
@@ -38,7 +38,7 @@ describe("no API token stored", () => {
 
 describe("token stored, successful API response", () => {
   beforeEach(() => {
-    chrome.storage.sync.get.mockResolvedValue({ apiToken: TOKEN });
+    chrome.storage.local.get.mockResolvedValue({ apiToken: TOKEN });
     global.fetch = jest.fn().mockResolvedValue({ ok: true });
     loadBackground();
   });
@@ -77,7 +77,7 @@ describe("token stored, successful API response", () => {
 
 describe("token stored, non-ok API response", () => {
   beforeEach(() => {
-    chrome.storage.sync.get.mockResolvedValue({ apiToken: TOKEN });
+    chrome.storage.local.get.mockResolvedValue({ apiToken: TOKEN });
     global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 403 });
     loadBackground();
   });
@@ -99,7 +99,7 @@ describe("token stored, non-ok API response", () => {
 
 describe("token stored, network error", () => {
   beforeEach(() => {
-    chrome.storage.sync.get.mockResolvedValue({ apiToken: TOKEN });
+    chrome.storage.local.get.mockResolvedValue({ apiToken: TOKEN });
     global.fetch = jest.fn().mockRejectedValue(new Error("Network failure"));
     loadBackground();
   });

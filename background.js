@@ -13,7 +13,7 @@ async function handleActionClick(tab) {
 }
 
 async function loadToken() {
-  const { apiToken } = await chrome.storage.sync.get("apiToken");
+  const { apiToken } = await chrome.storage.local.get("apiToken");
   return apiToken || null;
 }
 
